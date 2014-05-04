@@ -3,6 +3,7 @@
 #include "../System/State.h"
 #include "../Input/Mouse.h"
 #include "../Input/Keyboard.h"
+#include <iostream>
 
 using namespace luabind;
 using namespace std;
@@ -91,5 +92,12 @@ void LuaBinder::bind()
 
 int LuaBinder::loadScripts()
 {
-	return luaL_dofile(luaState, "main.lua");
+	auto ret = luaL_dofile(luaState, "main.lua");
+	if (ret != 0)
+	{
+		cout << lua_tostring(luaState, -1) << endl;
+		return 0;
+	}
+	else
+		return 1;
 }
