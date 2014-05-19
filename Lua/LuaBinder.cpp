@@ -55,7 +55,8 @@ void LuaBinder::bind()
 		.def("run", (void(Game::*)(State*))&Game::run)
 		.def("run", (void(Game::*)(State*, int, int))&Game::run)
 		.def("run", (void(Game::*)(State*, int, int, const std::string&))&Game::run)
-		.def("quit", &Game::quit),
+		.def("quit", &Game::quit)
+		.def("changeState", &Game::changeState),
 
 		class_<State, State_wrapper>("State")
 		.def(constructor<>())

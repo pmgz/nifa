@@ -8,8 +8,13 @@ class Game : public Singleton<Game>
 {
 protected:
 	State* currentState;
+	State* nextState;
 	sf::RenderWindow *window;
 	sf::Time dt;
+	bool stateChanged;
+
+private:
+	void switchState();
 
 public:
 	static float deltaTime;
@@ -20,7 +25,7 @@ public:
 	void run(State* state, int width, int height);
 	void run(State* state, int width, int height, const std::string& title);
 
-	void switchState(State* state);
+	void changeState(State* state);
 
 	void quit();
 

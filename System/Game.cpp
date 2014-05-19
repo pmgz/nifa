@@ -6,13 +6,9 @@ float Game::deltaTime;
 bool Game::focus = true;
 bool Game::gameEnded = false;
 
-void Game::switchState(State* state)
-{
-	currentState = state;
-}
-
 void Game::run(State* state, int width, int height, const std::string& title)
 {
+	stateChanged = false;
 	int framerate = 60;
 	if (window == nullptr) delete window;
 	window = new sf::RenderWindow(sf::VideoMode(width, height), title, sf::Style::Titlebar | sf::Style::Close);
@@ -23,6 +19,7 @@ void Game::run(State* state, int width, int height, const std::string& title)
 	sf::Clock deltaClock;
 	while (window->isOpen())
 	{
+		switchState();
 		sf::Event event;
 		while (window->pollEvent(event))
 		{
@@ -43,6 +40,7 @@ void Game::run(State* state, int width, int height, const std::string& title)
 		window->clear(sf::Color(255, 255, 255, 255));
 		currentState->draw();
 		window->display();
+		if (stateChanged) currentState->cleanUp();
 		dt = deltaClock.restart();
 		deltaTime = dt.asSeconds() * framerate;
 	}
@@ -56,6 +54,17 @@ void Game::run(State* state, int width, int height)
 void Game::run(State* state)
 {
 	run(state, 640, 480, "Default title");
+}
+
+void Game::changeState(State* state)
+{
+	nextState = state;
+	stateChanged = true;
+}
+
+void Game::switchState()
+{
+	if (stateChanged) currentState = nextState;
 }
 
 sf::RenderWindow* Game::getWindow()
