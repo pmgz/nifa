@@ -5,9 +5,18 @@
 
 class Sprite : public sf::Sprite
 {
+public:
+	enum CollisionMask { BOX, CIRCLE, PRECISE };
+
 protected:
 	int depth;
 	std::string type;
+	CollisionMask collisionMask;
+	float collisionMaskX;
+	float collisionMaskY;
+	float collisionMaskR;
+	float collisionMaskW;
+	float collisionMaskH;
 
 public:
 	typedef sf::Sprite super;
@@ -28,6 +37,16 @@ public:
 	void setTexture(const std::string &filename);
 	void setType(std::string type);
 	std::string getType();
+	void setCollisionBox(float x, float y, float w, float h);
+	void setCollisionCircle(float x, float y, float r);
+	void setCollisionPrecise();
+	void setCollisionMask(CollisionMask mask);
+	CollisionMask getCollisionMask();
+	float getCollisionMaskX();
+	float getCollisionMaskY();
+	float getCollisionMaskR();
+	float getCollisionMaskW();
+	float getCollisionMaskH();
 };
 
 class Sprite_wrapper : public Sprite, public luabind::wrap_base

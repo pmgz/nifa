@@ -65,6 +65,7 @@ void Sprite::setY(float y)
 void Sprite::setTexture(const std::string &filename)
 {
 	super::setTexture(TextureManager::getInstance()->loadTexture(filename));
+	setCollisionBox(getLocalBounds().left, getLocalBounds().top, getLocalBounds().width, getLocalBounds().height);
 }
 
 void Sprite::setType(std::string type)
@@ -75,4 +76,56 @@ void Sprite::setType(std::string type)
 std::string Sprite::getType()
 {
 	return type;
+}
+
+void Sprite::setCollisionBox(float _x, float _y, float w, float h)
+{
+	collisionMask = BOX;
+	collisionMaskX = _x;
+	collisionMaskY = _y;
+	collisionMaskW = w;
+	collisionMaskH = h;
+}
+
+void Sprite::setCollisionCircle(float _x, float _y, float r)
+{
+	collisionMask = CIRCLE;
+	collisionMaskX = _x;
+	collisionMaskY = _y;
+	collisionMaskR = r;
+}
+
+void Sprite::setCollisionPrecise()
+{
+	collisionMask = PRECISE;
+}
+
+Sprite::CollisionMask Sprite::getCollisionMask()
+{
+	return collisionMask;
+}
+
+float Sprite::getCollisionMaskX()
+{
+	return collisionMaskX;
+}
+
+float Sprite::getCollisionMaskY()
+{
+	return collisionMaskY;
+}
+
+float Sprite::getCollisionMaskR()
+{
+	return collisionMaskR;
+}
+
+float Sprite::getCollisionMaskW()
+{
+	return collisionMaskW;
+}
+
+float Sprite::getCollisionMaskH()
+{
+	return collisionMaskH;
 }

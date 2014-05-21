@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include "../Util/Util.h"
 
 QuadtreeNode::QuadtreeNode(int nx, int ny, int w, int h) : x(nx), y(ny), width(w), height(h), subNodes(nullptr)
 {
@@ -78,12 +79,35 @@ void QuadtreeNode::collide(Sprite* spr, std::vector<Sprite*>& results)
 
 bool QuadtreeNode::collision(Sprite* spr1, Sprite* spr2)
 {
-	auto rect1 = spr1->getGlobalBounds();
-	auto rect2 = spr2->getGlobalBounds();
-	if (rect1.intersects(rect2))
-		return true;
-	else
-		return false;
+	Sprite::CollisionMask mask1 = spr1->getCollisionMask();
+	Sprite::CollisionMask mask2 = spr2->getCollisionMask();
+	if (mask1 == Sprite::BOX && mask2 == Sprite::BOX)
+	{
+		auto rect1 = spr1->getGlobalBounds();
+		auto rect2 = spr2->getGlobalBounds();
+		if (rect1.intersects(rect2))
+			return true;
+		else
+			return false;
+	}
+	else if (mask1 == Sprite::CIRCLE && mask2 == Sprite::CIRCLE)
+	{
+		float x1 = spr1->getCollisionMaskX() + spr1->getGlobalBounds().left + spr1->getOrigin().x;
+		float y1 = spr1->getCollisionMaskY() + spr1->getGlobalBounds().top + spr1->getOrigin().y;
+		float r1 = spr1->getCollisionMaskR();
+		float x2 = spr2->getCollisionMaskX() + spr2->getGlobalBounds().left + spr2->getOrigin().x;
+		float y2 = spr2->getCollisionMaskY() + spr2->getGlobalBounds().top + spr2->getOrigin().y;
+		float r2 = spr2->getCollisionMaskR();
+		if (Util::pointDistance(x1, y1, x2, y2) < (r1 + r2))
+			return true;
+		else
+			return false;
+	}
+	else if (mask1 == Sprite::PRECISE || mask2 == Sprite::PRECISE)
+	{
+		return pixelPerfect(spr1, spr2);
+	}
+	else return false;
 }
 
 bool QuadtreeNode::pixelPerfect(Sprite* spr1, Sprite* spr2)
